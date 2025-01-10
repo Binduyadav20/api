@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #book-list {
+            margin-top: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Library Management System</h1>
+    <div id="book-list"></div>
+
+    <h2>Add a new book</h2>
+    <input type="text" id="title" placeholder="Book Title">
+    <input type="text" id="author" placeholder="Author">
+    <button onclick="addBook()">Add Book</button>
+
+    <script>
+       
+        function loadBooks() {
+            fetch('/api/books')
+                .then(response => response.json())
+                .then(books => {
+                    let bookList = document.getElementById('book-list');
+                    bookList.innerHTML = '';
+                    books.forEach(book => {
+                        bookList.innerHTML += `<p>${book.title} by ${book.author}</p>`;
+                    });
+                });
+        }
+
+        // Add a new book
+        function addBook() {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            fetch('/api/books', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, author })
+            }).then(() => loadBooks());
+        }
+
+       
+        window.onload = loadBooks;
+    </script>
+</body>
+</html>
+
